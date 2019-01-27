@@ -1,22 +1,21 @@
-# Travel
+# travel
 
-慕课网——Vue2.5开发去哪儿网App
+> A Vue.js project
 
-## 环境
+## Build Setup
 
-node.js版本：v10.15.0
-
-npm版本：6.4.1
-
-## 命令行工具（cli）
-
-```bash
-# 全局安装 Vue-cli
-npm install --global vue-cli
-# 创建一个基于 webpack 模板的新项目
-vue init webpack my-project
-# 安装依赖，走你
-cd my-project
+``` bash
+# install dependencies
 npm install
+
+# serve with hot reload at localhost:8080
 npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
 ```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
