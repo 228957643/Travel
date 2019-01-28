@@ -34,3 +34,9 @@ cd my-project
 npm install
 npm run dev
 ```
+
+## 导入的文件
+
+- border.css
+- reset.css
+- fastclick(执行命令：npm install fastclick --save)
