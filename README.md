@@ -40,3 +40,8 @@ npm run dev
 - border.css
 - reset.css
 - fastclick(执行命令：npm install fastclick --save)
+- axios(执行命令：npm install axios --save)（用于执行ajax请求）
+
+## 图标管理工具
+
+iconfont（账号：关联github账号）
