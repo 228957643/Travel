@@ -1,5 +1,5 @@
 <template>
-  <div :style="bodyStyle">
+  <div :style="bgImg">
     <home-header></home-header>
     <home-index></home-index>
   </div>
@@ -16,9 +16,7 @@ export default {
   },
   data () {
     return {
-      bodyStyle: {
-        background: "url('static/images/common/bg-img.jpg') no-repeat center top"
-      }
+      bgImg: this.GLOBAL.bgImg
     }
   }
 }

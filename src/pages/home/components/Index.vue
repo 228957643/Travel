@@ -2,7 +2,7 @@
 <!-- 首页——主要内容部分：main -->
   <div class="main-index">
     <!-- 头部导航栏 -->
-    <home-index-header></home-index-header>
+    <home-index-header :headerListActive="0"></home-index-header>
     <!-- 导航栏下的小游戏列表 -->
     <home-game-class></home-game-class>
     <!-- 轮播图 -->

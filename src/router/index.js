@@ -4,6 +4,7 @@ import Home from '@/pages/home/Home'
 import Login from '@/pages/login/Login'
 import Register from '@/pages/login/Register'
 import Feedback from '@/pages/home/Feedback'
+import GameDetail from '@/pages/home/GameDetail'
 
 Vue.use(Router)
 
@@ -31,6 +32,12 @@ export default new Router({
       path: '/feedback',
       name: 'Feedback',
       component: Feedback,
+      meta: {keepAlive: false}
+    },
+    {
+      path: '/game_detail',
+      name: 'GameDetail',
+      component: GameDetail,
       meta: {keepAlive: false}
     }
   ]
