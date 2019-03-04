@@ -21,19 +21,16 @@
           <li @mouseenter="handleMouseChange('played')" @mouseleave="handleMouseChange('played')" :style="verticalLineStyle">
             <span><img src="static/images/common/time.png" alt=""></span
             >&nbsp;<span>我玩过的</span>
-            <div class="pull-down-list" v-show="pullDownList.played">
-              <ul>
-                <li>啦啦啦</li>
-                <li>啦啦啦</li>
-                <li>啦啦啦</li>
-                <li>啦啦啦</li>
-              </ul>
+            <div class="pull-down-list" v-if="pullDownList.played">
+              <header-played-game-slider></header-played-game-slider>
             </div>
           </li>
           <li @mouseenter="handleMouseChange('love')" @mouseleave="handleMouseChange('love')" :style="verticalLineStyle">
             <span><img src="static/images/common/love.png" alt=""></span
             >&nbsp;<span>猜你喜欢</span>
-            <div class="pull-down-list" v-show="pullDownList.love">啦啦啦</div>
+            <div class="pull-down-list" v-if="pullDownList.love">
+              <header-guess-love-slider></header-guess-love-slider>
+            </div>
           </li>
           <li @mouseenter="handleMouseChange('more')" @mouseleave="handleMouseChange('more')">
             <span><img src="static/images/common/more.png" alt=""></span
@@ -52,8 +49,14 @@
 </template>
 
 <script>
+import HeaderGuessLoveSlider from './header_components/GuessLoveSlider'
+import HeaderPlayedGameSlider from './header_components/PlayedGameSlider'
 export default {
   name: 'HomeHeader',
+  components: {
+    HeaderGuessLoveSlider,
+    HeaderPlayedGameSlider
+  },
   data () {
     return {
       searchContent: '',
@@ -150,7 +153,8 @@ export default {
   left:-50px;
   width:240px;
   min-height:10px;
-  border:1px solid #ccc;
+  border:1px solid #FFDEAD;
+  z-index: 11;
 }
 .pdl{
   width:120px;

@@ -1,9 +1,28 @@
 <template>
-  <div class="index-image-swiper">
-    <swiper :options="swiperOption">
+  <div class="header-page-down-list-slider">
+    <!-- 头部 -->
+    <div class="hpdls-header">
+      <ul>
+        <!-- 此处（头部）共享了GameList.vue中的部分样式 -->
+        <li class="igl-bglh-img">
+          <img src="static/images/index/more-game.png" alt>
+        </li>
+        <li class="igl-bglh-text">
+          <span>猜你喜欢</span>
+        </li>
+        <li class="igl-bglh-more">
+          <router-link to>更多</router-link>
+        </li>
+      </ul>
+    </div>
+    <!-- 解释说明 -->
+    <p class="header-guess-love-slider-explain">根据您的游戏记录，为您推荐以下游戏</p>
+    <!-- 轮播图部分 -->
+    <div class="hpdls-body">
+      <swiper :options="swiperOption">
       <swiper-slide>
           <ul>
-            <li v-for="(item,index) of 11" :key="index" class="index-image-swiper-item">
+            <li v-for="(item,index) of 3" :key="index" class="hpdls-swiper-item">
               <router-link to="">
                 <div><img src="http://i3.7k7kimg.cn/cms/cms10/20180810/143007_9202.jpg" alt=""></div>
                 <div>暴力摩托</div>
@@ -21,7 +40,7 @@
       </swiper-slide>
       <swiper-slide>
           <ul>
-            <li v-for="(item,index) of 11" :key="index" class="index-image-swiper-item">
+            <li v-for="(item,index) of 3" :key="index" class="hpdls-swiper-item">
               <router-link to="">
                 <div><img src="http://i3.7k7kimg.cn/cms/cms10/20180810/143007_9202.jpg" alt=""></div>
                 <div>暴力摩托</div>
@@ -37,21 +56,20 @@
             </li>
           </ul>
       </swiper-slide>
-      <div id="index-image-swiper-btn-prev" class="swiper-button-prev" slot="button-prev"></div>
-      <div id="index-image-swiper-btn-next" class="swiper-button-next" slot="button-next"></div>
+      <div id="hpdls-swiper-pagination" class="swiper-pagination" slot="pagination"></div>
     </swiper>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'IndexImageSlider',
+  name: 'HeaderGuessLoveSlider',
   data () {
     return {
       swiperOption: {
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
+        pagination: {
+          el: '.swiper-pagination'
         }
       }
     }
@@ -59,50 +77,61 @@ export default {
 }
 </script>
 
-<style scoped>
-.index-image-swiper{
-  height: 252px;
-  border: 1px solid #FFDEAD;
-  box-sizing: border-box;
+<style>
+.header-page-down-list-slider{
+  width:280px;
+  z-index: 1;
+  background-color: #fff;
 }
-/* 左右翻页的箭头 */
-#index-image-swiper-btn-prev{
-  width:30px;
-  height:20px;
-}
-#index-image-swiper-btn-next{
-  width:30px;
-  height:20px;
-}
+
 /* 每个a标签（包含图片和名称） */
-.index-image-swiper ul{
+.header-page-down-list-slider ul{
   display:flex;
-  margin-top: 14px;
-  margin-left: 30px;
+  margin: 14px auto 30px 13px;
 }
 .swiper-slide-active{
   overflow: hidden;
 }
-.index-image-swiper-item{
+.hpdls-swiper-item{
   margin-left: 5px;
 }
-.index-image-swiper-item>a{
+.hpdls-swiper-item>a{
   display:block;
   width:78px;
   height:69px;
   text-align: center;
   margin-bottom: 8px;
 }
-.index-image-swiper-item>a:hover{
+.hpdls-swiper-item>a:hover{
   text-decoration: underline;
   color:orange;
 }
-.index-image-swiper-item>a img{
+.hpdls-swiper-item>a img{
   width:66px;
   height:50px;
 }
-.index-image-swiper-item>a>div:nth-child(2){
+.hpdls-swiper-item>a>div:nth-child(2){
   font-size: 12px;
   margin-top: 4px;
+}
+#hpdls-swiper-pagination{
+  bottom: 5%;
+}
+/* 头部样式 */
+.hpdls-header {
+  width: 100%;
+  height: 32px;
+  line-height: 32px;
+  background-color: #ffefd5;
+}
+.hpdls-header > ul {
+  display: flex;
+  margin: 0;
+}
+/* 解释说明 */
+.header-guess-love-slider-explain{
+  margin: 20px auto 10px auto;
+  font-size: 12px;
+  color:#fb6400;
 }
 </style>
