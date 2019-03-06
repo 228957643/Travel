@@ -99,10 +99,8 @@ export default {
   margin-left: 540px;
 }
 .index-footer{
-  width:100%;
-  min-height: 100px;
+  width:990px;
   margin:10px auto 20px auto;
-  box-sizing: border-box;
 }
 .index-footer span{
   font-size: 12px;
