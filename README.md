@@ -41,6 +41,7 @@ npm run dev
 - reset.css
 - fastclick(执行命令：npm install fastclick --save)
 - axios(执行命令：npm install axios --save)（用于执行ajax请求）
+- vue-toast(弹窗提示[详情](https://github.com/lin-xin/vue-toast))
 
 ## 图标管理工具
 

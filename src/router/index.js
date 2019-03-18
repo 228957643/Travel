@@ -5,6 +5,7 @@ import Login from '@/pages/login/Login'
 import Register from '@/pages/login/Register'
 import Feedback from '@/pages/home/Feedback'
 import GameDetail from '@/pages/home/GameDetail'
+import UserCenter from '@/pages/home/UserCenter'
 
 Vue.use(Router)
 
@@ -38,6 +39,12 @@ export default new Router({
       path: '/game_detail',
       name: 'GameDetail',
       component: GameDetail,
+      meta: {keepAlive: false}
+    },
+    {
+      path: '/user_center',
+      name: 'UserCenter',
+      component: UserCenter,
       meta: {keepAlive: false}
     }
   ]

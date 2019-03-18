@@ -54,10 +54,13 @@
             <img src="static/images/common/more.png" alt>
           </span>&nbsp;
           <span>更多</span>
-          <div class="pull-down-list pdl" v-show="pullDownList.more">
+          <div class="pull-down-list pdl" v-if="pullDownList.more">
             <ul>
               <li>
                 <router-link to="/game_detail">我的赏金</router-link>
+              </li>
+              <li>
+                <router-link to="/user_center">个人中心</router-link>
               </li>
               <li>
                 <router-link to>我的收藏</router-link>
@@ -113,6 +116,10 @@ export default {
           break
       }
     }
+  },
+  activated () {
+    // 每次主界面被激活，都将所有的下拉列表收起来
+    this.pullDownList = { played: false, love: false, more: false }
   }
 }
 </script>

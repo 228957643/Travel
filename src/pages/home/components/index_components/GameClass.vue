@@ -31,7 +31,7 @@ export default {
   methods: {
     getClassData () {
       // 绝对路径：http://localhost/graduation_server/public/index.php/admin/game_class
-      axios.get('http://gmp.test/admin/game_class').then(this.getClassDataSucc)
+      axios.get('http://gmp.test/home/game_class').then(this.getClassDataSucc)
     },
     getClassDataSucc (res) {
       res = res.data

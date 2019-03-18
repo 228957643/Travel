@@ -9,10 +9,18 @@ import global_ from './pages/Global'
 import './assets/styles/reset.css'
 import 'swiper/dist/css/swiper.css'
 import './assets/styles/border.css'
+import 'vue2-toast/lib/toast.css'
+import Toast from 'vue2-toast'
 
 Vue.prototype.GLOBAL = global_
 Vue.config.productionTip = false
 Vue.use(VueAwesomeSwiper)
+Vue.use(Toast, {
+  defaultType: 'top',
+  duration: 2500,
+  wordWrap: false,
+  width: '450px'
+})
 fastClick.attach(document.body)
 
 /* eslint-disable no-new */
