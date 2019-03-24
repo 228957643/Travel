@@ -6,6 +6,7 @@ import Register from '@/pages/login/Register'
 import Feedback from '@/pages/home/Feedback'
 import GameDetail from '@/pages/home/GameDetail'
 import UserCenter from '@/pages/home/UserCenter'
+import GameCustomization from '@/pages/home/GameCustomization'
 
 Vue.use(Router)
 
@@ -45,6 +46,12 @@ export default new Router({
       path: '/user_center',
       name: 'UserCenter',
       component: UserCenter,
+      meta: {keepAlive: false}
+    },
+    {
+      path: '/game_customization',
+      name: 'GameCustomization',
+      component: GameCustomization,
       meta: {keepAlive: false}
     }
   ]

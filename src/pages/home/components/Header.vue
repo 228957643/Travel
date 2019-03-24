@@ -57,16 +57,13 @@
           <div class="pull-down-list pdl" v-if="pullDownList.more">
             <ul>
               <li>
-                <router-link to="/game_detail">我的赏金</router-link>
+                <router-link to="/game_detail">游戏详情界面</router-link>
               </li>
               <li>
                 <router-link to="/user_center">个人中心</router-link>
               </li>
               <li>
-                <router-link to>我的收藏</router-link>
-              </li>
-              <li>
-                <router-link to>定制化列表</router-link>
+                <router-link to="/game_customization">定制化</router-link>
               </li>
             </ul>
           </div>
