@@ -8,21 +8,21 @@
         <span>用户名:</span>
         <input
           type="text"
-          placeholder="请输入用户名"
+          placeholder="请输入用户名（6-12个字符）"
           v-model="loginAccount"
           @input="handleInputChange('account')"
         >
-        <p class="page-login-account-warn" v-show="accountWarnShow">用户名不能为空</p>
+        <p class="page-login-account-warn" v-show="accountWarnShow">用户名为6-12个字符</p>
       </label>
       <label>
         <span>密码:</span>
         <input
           type="password"
-          placeholder="请输入密码"
+          placeholder="请输入密码（6-20个字符）"
           v-model="loginPassword"
           @input="handleInputChange('password')"
         >
-        <p class="page-login-password-warn" v-show="passwordWarnShow">密码不能为空</p>
+        <p class="page-login-password-warn" v-show="passwordWarnShow">密码为6-20个字符</p>
       </label>
       <label>
         <button class="page-login-button" @click="handleLoginBtnClick">提交</button>
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+import md5 from 'js-md5'
 export default {
   name: 'Login',
   data () {
@@ -44,24 +46,39 @@ export default {
     }
   },
   methods: {
+    ajaxLogin () {
+      var params = new URLSearchParams()
+      var this_ = this
+      params.append('account', this.loginAccount)
+      params.append('password', md5(this.loginPassword))
+      axios.post(this.GLOBAL.apiPath + '/home/login', params)
+        .then(function (response) {
+          var res = response.data
+          if (res.success) {
+            // 将token保存到session中
+            sessionStorage.setItem('gmp-token', res.data.token)
+            sessionStorage.setItem('gmp-nickname', res.data.nickname)
+            // 登录成功，跳转到首页
+            this_.$router.push({ path: '/' }) // 登录成功后，跳转到首页
+            return false
+          } else {
+            this_.$toast.top(res.errors)
+            this_.loginPassword = ''
+            return false
+          }
+        })
+    },
     handleLoginBtnClick () {
-      if (this.loginAccount.length === 0) {
+      if (this.loginAccount.length < 6 || this.loginAccount.length > 12) {
         this.accountWarnShow = true
         return false
       }
-      if (this.loginPassword.length === 0) {
+      if (this.loginPassword.length < 6 || this.loginPassword.length > 20) {
         this.passwordWarnShow = true
         return false
       }
       // 登录逻辑
-      var isLoginSuccess = true
-      if (isLoginSuccess) {
-        alert('登录成功（无验证）')
-        this.$router.push({ path: '/' }) // 登录成功后，跳转到首页
-      } else {
-        this.loginPassword = ''
-        alert('登录失败，请输入正确的账号密码')
-      }
+      this.ajaxLogin()
     },
     handleInputChange (p) {
       switch (p) {
@@ -83,7 +100,7 @@ export default {
   margin-top: 100px;
   max-width: 500px;
   padding: 20px 30px 20px 30px;
-  font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 12px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-shadow: 1px 1px 1px #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -94,7 +111,7 @@ export default {
   display: block;
   padding: 0px 0px 10px 40px;
   margin: -10px -30px 30px -30px;
-  font: 25px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   border-bottom: 1px solid #dadada;
   color: #888;
   letter-spacing: 2px;
@@ -112,7 +129,7 @@ export default {
   width: 20%;
   padding-right: 10px;
   margin-top: 10px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: bold;
   text-align: right;
   color: #333;

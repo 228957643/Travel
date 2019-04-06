@@ -17,12 +17,13 @@
       <form action method="post" class="index-feedback-form-report">
         <label>
           <span>联系方式:</span>
-          <select name="select2" class="index-feedback-select2" v-model="fbContactWay">
+          <select name="select2" class="index-feedback-select2" v-model="saveData.fbContactWay">
+            <option value="">请选择</option>
             <option value="Email">Email</option>
             <option value="Phone" selected>Phone</option>
             <option value="QQ">QQ</option>
           </select>
-          <input type="text" placeholder v-model="fbContactContent">
+          <input type="text" placeholder v-model="saveData.fbContactContent">
         </label>
         <label>
           <span>反馈内容:</span>
@@ -30,13 +31,13 @@
             id="index-feedback-mesaage"
             name="message"
             placeholder="请填写您的意见建议 ... "
-            v-model="fbContent"
+            v-model="saveData.fbContent"
             required
           ></textarea>
         </label>
         <label>
           <span>反馈类别:</span>
-          <select name="select1" class="index-feedback-select1" v-model="fbType">
+          <select name="select1" class="index-feedback-select1" v-model="saveData.fbType">
             <option value="suggest" selected>对本网站提出的建议</option>
             <option value="question">遇到困难的问题需要解决</option>
           </select>
@@ -52,30 +53,61 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'Feedback',
   data () {
     return {
-      fbContactWay: 'Phone', // 联系方式
-      fbContactContent: '', // 联系方式的内容
-      fbContent: '', // 反馈内容
-      fbType: 'suggest' // 反馈类型
+      saveData: {
+        fbContactWay: '', // 联系方式
+        fbContactContent: '', // 联系方式的内容
+        fbContent: '', // 反馈内容
+        fbType: 'suggest' // 反馈类型
+      }
     }
   },
   methods: {
     handleBtnClick () {
       // 参数验证
-      if (this.fbContent.length === 0) {
-        alert('反馈内容不能为空')
+      if (this.saveData.fbContent.length === 0) {
+        this.$toast.top('反馈内容不能为空')
         return
       }
       // 将用户输入的数据发送到后台
-      alert('反馈成功，感谢您的建议')
-      // 重置反馈数据
-      this.fbContactWay = 'Phone'
-      this.fbContactContent = ''
-      this.fbContent = ''
-      this.suggest = 'suggest'
+      var _this = this
+      var params = new URLSearchParams()
+      params.append('fb_content', this.saveData.fbContent)
+      params.append('fb_type', this.saveData.fbType)
+      params.append('contact_content', this.saveData.fbContactContent)
+      params.append('contact_way', this.saveData.fbContactWay)
+      axios.post(this.GLOBAL.apiPath + '/home/feedback/insert', params, {
+        headers: { 'Authorization': sessionStorage.getItem('gmp-token') }
+      }).then(function (response) {
+        var res = response.data
+        if (res.success) {
+          _this.$toast.top('反馈成功，感谢您的建议')
+          // 重置反馈数据
+          _this.saveData.fbContactWay = ''
+          _this.saveData.fbContactContent = ''
+          _this.saveData.fbContent = ''
+          _this.saveData.suggest = 'suggest'
+        } else {
+          for (var e in res.data[0]) {
+            alert(res.data[0][e])
+            break // 仅打印第一个错误
+          }
+          return false
+        }
+      }).catch(function (err) {
+        if (err.response.status === 401) {
+          alert('登录失效，请重新登录')
+          sessionStorage.clear()
+          _this.$router.push({ path: '/login' })
+        } else {
+          alert(err.response.status + '：' + err.response.statusText)
+        }
+      })
+      return false
     }
   },
   mounted () {
@@ -86,7 +118,7 @@ export default {
 
 <style>
 .index-feedback {
-  background: url("http://i.7k7kimg.cn/themes/zt/feedback/ff_01.jpg") repeat-x
+  background: url('http://i.7k7kimg.cn/themes/zt/feedback/ff_01.jpg') repeat-x
     #7cb08c;
 }
 .index-feedback-main-warp {
@@ -95,7 +127,7 @@ export default {
   position: relative;
 }
 .index-feedback-main-top {
-  background: url("http://i.7k7kimg.cn/themes/zt/feedback/ff_07.png") repeat-x;
+  background: url('http://i.7k7kimg.cn/themes/zt/feedback/ff_07.png') repeat-x;
   height: 110px;
   padding: 37px 20px 17px;
 }
@@ -116,7 +148,7 @@ export default {
   margin: auto;
   margin-top: 50px;
   padding: 20px 30px 20px 30px;
-  font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 12px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-shadow: 1px 1px 1px #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -127,7 +159,7 @@ export default {
   display: block;
   padding: 0px 0px 10px 40px;
   margin: -10px -30px 30px -30px;
-  font: 25px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   border-bottom: 1px solid #dadada;
   color: #888;
 }
@@ -144,12 +176,12 @@ export default {
   width: 20%;
   padding-right: 10px;
   margin-top: 10px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: bold;
   text-align: right;
   color: #333;
 }
-.index-feedback-Content-Main input[type="text"],
+.index-feedback-Content-Main input[type='text'],
 .index-feedback-Content-Main textarea {
   width: 70%;
   height: 20px;
@@ -216,11 +248,11 @@ export default {
 .index-feedback-footer {
   min-height: 200px;
 }
-.index-feedback-back{
+.index-feedback-back {
   margin-left: 10px;
 }
-.index-feedback-back:hover{
-  text-decoration:underline;
-  color:red;
+.index-feedback-back:hover {
+  text-decoration: underline;
+  color: red;
 }
 </style>

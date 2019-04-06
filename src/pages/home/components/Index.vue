@@ -66,13 +66,13 @@ export default {
       }, 16)
     }
   },
-  activated () {
+  created () {
     // 每次回到首页，都显示顶部，并且隐藏右侧的导航条
     window.scrollTo(0, 0)
     this.pageRightBtnsShow = false
     window.addEventListener('scroll', this.handleScroll)
   },
-  deactivated () {
+  destroyed () {
     window.removeEventListener('scroll', this.handleScroll)
   }
 }

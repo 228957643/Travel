@@ -7,35 +7,35 @@
       <table class="user-center-table">
         <tr>
           <td>您的账号：</td>
-          <td>me228957643</td>
+          <td>{{userInfo.account === ''?'-':userInfo.account}}</td>
         </tr>
         <tr>
           <td>昵称：</td>
-          <td>{{saveInfo.nickname}}</td>
+          <td>{{userInfo.nickname === ''?'-':userInfo.nickname}}</td>
         </tr>
         <tr>
           <td>电子邮箱：</td>
-          <td>{{saveInfo.email}}</td>
+          <td>{{userInfo.email === ''?'-':userInfo.email}}</td>
         </tr>
         <tr>
           <td>性别：</td>
-          <td>{{saveInfo.sex}}</td>
+          <td>{{userInfo.sex === ''?'-':userInfo.sex}}</td>
         </tr>
         <tr>
           <td>生日：</td>
-          <td>{{saveInfo.birthday}}</td>
+          <td>{{userInfo.birthday === ''?'-':userInfo.birthday}}</td>
         </tr>
         <tr>
           <td>所在地：</td>
-          <td>{{saveInfo.address}}</td>
+          <td>{{userInfo.address === ''?'-':userInfo.address}}</td>
         </tr>
         <tr>
           <td>QQ：</td>
-          <td>{{saveInfo.qq}}</td>
+          <td>{{userInfo.qq === ''?'-':userInfo.qq}}</td>
         </tr>
         <tr>
           <td>联系电话：</td>
-          <td>{{saveInfo.phone}}</td>
+          <td>{{userInfo.phone === ''?'-':userInfo.phone}}</td>
         </tr>
       </table>
       <div class="user-center-my-info-btn">
@@ -47,26 +47,26 @@
       <table class="user-center-table">
         <tr>
           <td>您的账号：</td>
-          <td>me228957643</td>
+          <td>{{userInfo.account}}</td>
         </tr>
         <tr>
           <td>昵称：</td>
           <td>
-            <input type="text" v-model="saveInfo.nickname" maxlength="8">
+            <input type="text" v-model="userInfo.nickname" maxlength="8">
           </td>
         </tr>
         <tr>
           <td>电子邮箱：</td>
           <td>
-            <input type="text" v-model="saveInfo.email" maxlength="20">
+            <input type="text" v-model="userInfo.email" maxlength="20">
           </td>
         </tr>
         <tr>
           <td>性别：</td>
           <td>
-            <input id="sex0" v-model="saveInfo.sex" type="radio" value="男" name="sex" checked>
+            <input id="sex0" v-model="userInfo.sex" type="radio" value="男" name="sex" checked>
             <label for="sex0">男</label>
-            <input id="sex1" v-model="saveInfo.sex" type="radio" value="女" name="sex">
+            <input id="sex1" v-model="userInfo.sex" type="radio" value="女" name="sex">
             <label for="sex1">女</label>
           </td>
         </tr>
@@ -75,7 +75,7 @@
           <td>
             <input
               type="text"
-              v-model="saveInfo.birthday"
+              v-model="userInfo.birthday"
               maxlength="10"
               placeholder="格式：xxxx-xx-xx"
             >
@@ -84,24 +84,25 @@
         <tr>
           <td>所在地：</td>
           <td>
-            <input type="text" v-model="saveInfo.address" maxlength="20">
+            <input type="text" v-model="userInfo.address" maxlength="20">
           </td>
         </tr>
         <tr>
           <td>QQ：</td>
           <td>
-            <input type="text" v-model="saveInfo.qq" maxlength="11">
+            <input type="text" v-model="userInfo.qq" maxlength="11">
           </td>
         </tr>
         <tr>
           <td>联系电话：</td>
           <td>
-            <input type="text" v-model="saveInfo.phone" maxlength="11">
+            <input type="text" v-model="userInfo.phone" maxlength="11">
           </td>
         </tr>
       </table>
       <div class="user-center-my-info-btn">
         <button style="background-color:red;" @click="handleSaveUserInfo">保存个人信息</button>
+        <button style="margin-left:20px;" @click="handleSaveUserInfoCancel">取消</button>
       </div>
     </div>
     <!-- 我的实名认证信息 -->
@@ -110,11 +111,11 @@
       <table class="user-center-table">
         <tr>
           <td>真实姓名：</td>
-          <td>梅恩</td>
+          <td>{{userInfo.real_name}}</td>
         </tr>
         <tr>
           <td>身份证号：</td>
-          <td>5113**********3616</td>
+          <td>{{userInfo.id_card}}</td>
         </tr>
       </table>
       <div class="user-center-my-info-btn">
@@ -133,28 +134,59 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'UserCenterMyInfo',
+  props: ['userInfo'],
   data () {
     return {
-      myInfoShow: true,
-      saveInfo: {
-        nickname: 'me228957643',
-        sex: '男',
-        email: 'meien643@163.com',
-        birthday: '1996-11-10',
-        address: '四川省成都市',
-        qq: '228957643',
-        phone: '-'
-      }
+      myInfoShow: true
     }
   },
   methods: {
     // 点击“保存个人信息”按钮
     handleSaveUserInfo () {
-      // TODO: 此处应该请求后端接口，修改数据
-      alert('敬请期待')
-      this.myInfoShow = true
+      // 验证用户输入（这里就算了）
+      var _this = this
+      var params = new URLSearchParams()
+      params.append('nickname', this.userInfo.nickname)
+      params.append('sex', this.userInfo.sex)
+      params.append('email', this.userInfo.email)
+      params.append('birthday', this.userInfo.birthday)
+      params.append('address', this.userInfo.address)
+      params.append('qq', this.userInfo.qq)
+      params.append('phone', this.userInfo.phone)
+      axios.post(this.GLOBAL.apiPath + '/home/user_center/update', params, {
+        headers: {
+          'Authorization': sessionStorage.getItem('gmp-token')
+        }
+      }).then(function (response) {
+        var res = response.data
+        if (res.success) {
+          sessionStorage.setItem('gmp-nickname', _this.userInfo.nickname)
+          alert('修改个人信息成功')
+          location.reload()
+        } else {
+          for (var e in res.data[0]) {
+            alert(res.data[0][e])
+            break // 仅打印第一个错误
+          }
+          location.reload()
+          return false
+        }
+      }).catch(function (err) {
+        if (err.response.status === 401) {
+          alert('登录失效，请重新登录')
+          sessionStorage.clear()
+          _this.$router.push({ path: '/login' })
+        } else {
+          alert(err.response.status + '：' + err.response.statusText)
+        }
+      })
+    },
+    // 取消修改个人信息
+    handleSaveUserInfoCancel () {
+      location.reload()
     },
     // 点击“修改个人信息”按钮
     handleMyInfoShow () {

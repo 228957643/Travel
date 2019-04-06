@@ -18,10 +18,33 @@
     <!-- 登录状态才显示的内容 -->
     <div class="user-show">
       <ul>
-        <li :style="verticalLineStyle">
+        <li v-if="!isLogin" :style="verticalLineStyle">
           <img src="static/images/common/person.png" alt>
           <router-link to="/login">登录</router-link>&nbsp;/&nbsp;
           <router-link to="/register">注册</router-link>
+        </li>
+        <li
+          class="header-user"
+          v-if="isLogin"
+          @mouseenter="handleMouseChange('user')"
+          @mouseleave="handleMouseChange('user')"
+          style="background:url('static/images/common/vertical-line.png') no-repeat 170px 16px;width:180px;"
+        >
+          <router-link to="/user_center">
+            <img src="static/images/login/after-login.png" alt>
+            <span>{{nickName}}</span>
+            <img src="static/images/login/xia.png" style="margin-top:-4px;" alt>
+          </router-link>
+          <div class="pull-down-list pdl" v-if="pullDownList.user">
+            <ul>
+              <li>
+                <router-link to="/user_center">个人中心</router-link>
+              </li>
+              <li>
+                <a href="javascript:void(0)" @click="handleUserUnLogin">退出登录</a>
+              </li>
+            </ul>
+          </div>
         </li>
         <li
           @mouseenter="handleMouseChange('played')"
@@ -60,9 +83,6 @@
                 <router-link to="/game_detail">游戏详情界面</router-link>
               </li>
               <li>
-                <router-link to="/user_center">个人中心</router-link>
-              </li>
-              <li>
                 <router-link to="/game_customization">定制化</router-link>
               </li>
             </ul>
@@ -84,18 +104,33 @@ export default {
   },
   data () {
     return {
+      isLogin: false, // 用户是否登录
+      nickName: '', // 用户昵称
       searchContent: '',
       pullDownList: {
         played: false,
         love: false,
-        more: false
+        more: false,
+        user: false
       },
       verticalLineStyle: {
         background: "url('static/images/common/vertical-line.png') no-repeat 110px 16px"
       }
     }
   },
+  mounted () {
+    var nickName = sessionStorage.getItem('gmp-nickname')
+    if (nickName !== null) {
+      this.nickName = nickName
+      this.isLogin = true
+    }
+  },
   methods: {
+    // 退出登录
+    handleUserUnLogin () {
+      sessionStorage.clear()
+      location.reload()
+    },
     handleSearchBtnClick: function () {
       alert(this.searchContent)
       this.searchContent = ''
@@ -111,12 +146,11 @@ export default {
         case 'more':
           this.pullDownList.more = !this.pullDownList.more
           break
+        case 'user':
+          this.pullDownList.user = !this.pullDownList.user
+          break
       }
     }
-  },
-  activated () {
-    // 每次主界面被激活，都将所有的下拉列表收起来
-    this.pullDownList = { played: false, love: false, more: false }
   }
 }
 </script>
@@ -131,6 +165,22 @@ export default {
 }
 .header > div {
   flex: none;
+}
+/* 用户昵称 */
+.header-user img:nth-child(1) {
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
+}
+.header-user a {
+  color: #777;
+}
+.header-user span {
+  max-width: 102px;
+  height: 16px;
+  line-height: 16px;
+  display: inline-block;
+  overflow: hidden;
 }
 .website-logo img {
   height: 40px;
@@ -186,15 +236,18 @@ export default {
   z-index: 11;
 }
 .pdl {
-  width: 120px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  width: 100%;
   left: -6px;
 }
 .pdl > ul > li {
-  height: 28px;
+  height: 32px;
   box-sizing: border-box;
-  padding-top: 6px;
+  padding-top: 8px;
 }
-.pdl > ul > li:hover {
-  background-color: #ececec;
+.pdl > ul > li a:hover {
+  color: #ff8937;
+  text-decoration: underline;
 }
 </style>

@@ -16,15 +16,18 @@
           <li class="user-center-body-left-first">
             <div class="user-center-blf-img">
               <router-link to>
-                <img src="static/images/user_center/default-head-img.png" alt>
+                <img
+                  :src="userInfo.head_img === ''?'static/images/user_center/default-head-img.png':userInfo.head_img"
+                  alt
+                >
               </router-link>
             </div>
             <div class="user-center-blf-text">
-              <div title="忘记曾经的">忘记曾经的</div>
+              <div :title="userInfo.nickname">{{userInfo.nickname}}</div>
               <div>
                 <a @click="handlePageChange('my_headimg')">更换头像</a>
                 |
-                <a>退出</a>
+                <a @click="handleUserOutLogin">退出</a>
               </div>
             </div>
           </li>
@@ -51,10 +54,14 @@
         </ul>
       </div>
       <div class="user-center-body-right">
-        <user-center-my-info @rnclick="handlePageChange('real_name')" v-if="showPage.my_info"></user-center-my-info>
+        <user-center-my-info
+          :userInfo="userInfo"
+          @rnclick="handlePageChange('real_name')"
+          v-if="showPage.my_info"
+        ></user-center-my-info>
         <user-center-update-pwd v-if="showPage.update_pwd"></user-center-update-pwd>
-        <user-center-my-headimg v-if="showPage.my_headimg"></user-center-my-headimg>
-        <user-center-real-name v-if="showPage.real_name"></user-center-real-name>
+        <user-center-my-headimg :headImg="userInfo.head_img" v-if="showPage.my_headimg"></user-center-my-headimg>
+        <user-center-real-name :account="userInfo.account" v-if="showPage.real_name"></user-center-real-name>
       </div>
     </div>
   </div>
@@ -65,6 +72,7 @@ import UserCenterMyInfo from './components/user_center_components/MyInfo'
 import UserCenterUpdatePwd from './components/user_center_components/UpdatePwd'
 import UserCenterRealName from './components/user_center_components/RealName'
 import UserCenterMyHeadimg from './components/user_center_components/MyHeadimg'
+import axios from 'axios'
 export default {
   name: 'UserCenter',
   components: {
@@ -84,10 +92,12 @@ export default {
         update_pwd: false,
         my_headimg: false,
         real_name: false
-      }
+      },
+      userInfo: {}
     }
   },
   methods: {
+    // 点击按钮，变更界面
     handlePageChange (val) {
       switch (val) {
         case 'my_info':
@@ -103,7 +113,40 @@ export default {
           this.showPage = { my_info: false, update_pwd: false, my_headimg: false, real_name: true }
           break
       }
+    },
+    // 退出登录
+    handleUserOutLogin () {
+      sessionStorage.clear() // 清除session
+      this.$router.push({ path: '/' })
+    },
+    // 获取用户信息
+    getUserInfo () {
+      var _this = this
+      axios.get(this.GLOBAL.apiPath + '/home/user_center/list', {
+        headers: {
+          'Authorization': sessionStorage.getItem('gmp-token')
+        }
+      }).then(function (response) {
+        var res = response.data
+        if (res.success) {
+          _this.userInfo = res.data.userInfo
+        } else {
+          alert(res.errors)
+          _this.$router.push({ path: '/' })
+        }
+      }).catch(function (err) {
+        if (err.response.status === 401) {
+          alert('登录失效，请重新登录')
+          sessionStorage.clear()
+          _this.$router.push({ path: '/login' })
+        } else {
+          alert(err.response.status + '：' + err.response.statusText)
+        }
+      })
     }
+  },
+  created () {
+    this.getUserInfo()
   }
 }
 </script>

@@ -10,7 +10,7 @@
           type="text"
           placeholder="长度为6-12个字符，区分大小写"
           maxlength="12"
-          v-model="registerAccount"
+          v-model="saveData.registerAccount"
           @input="handleInputChange('account')"
         >
         <p v-show="accountWarnShow">用户名为6-12个字符（字母或数字）</p>
@@ -21,7 +21,7 @@
           type="password"
           placeholder="长度为6-20个字符，区分大小写"
           maxlength="20"
-          v-model="registerPassword"
+          v-model="saveData.registerPassword"
           @input="handleInputChange('password')"
         >
         <p v-show="passwordWarnShow">密码为6-20个字符（字母或数字）</p>
@@ -32,7 +32,7 @@
           type="password"
           placeholder="长度为6-20个字符，区分大小写"
           maxlength="20"
-          v-model="registerAduitPassword"
+          v-model="saveData.registerAduitPassword"
           @input="handleInputChange('aduit-password')"
         >
         <p v-show="aduitPasswordWarnShow">两次输入的密码不同</p>
@@ -43,7 +43,7 @@
           type="text"
           placeholder="防沉迷法要求填写真实姓名"
           maxlength="5"
-          v-model="registerRealName"
+          v-model="saveData.registerRealName"
           @input="handleInputChange('real-name')"
         >
         <p v-show="realNameWarnShow">真实姓名不能为空</p>
@@ -54,7 +54,7 @@
           type="text"
           placeholder="请填写真实的身份证号"
           maxlength="20"
-          v-model="registerIdCard"
+          v-model="saveData.registerIdCard"
           @input="handleInputChange('id-card')"
         >
         <p v-show="idCardWarnShow">身份证号不能为空</p>
@@ -68,16 +68,20 @@
 </template>
 
 <script>
+import axios from 'axios'
+import md5 from 'js-md5'
 export default {
   name: 'Register',
   data () {
     return {
       // 用户填写的数据
-      registerAccount: '',
-      registerPassword: '',
-      registerAduitPassword: '',
-      registerRealName: '',
-      registerIdCard: '',
+      saveData: {
+        registerAccount: '',
+        registerPassword: '',
+        registerAduitPassword: '',
+        registerRealName: '',
+        registerIdCard: ''
+      },
       // 是否显示提示
       accountWarnShow: false,
       passwordWarnShow: false,
@@ -90,25 +94,25 @@ export default {
     handleregisterBtnClick () {
       var reg = /^[0-9a-zA-Z]*$/ // 只能为数字和字母的组合
       var flag = false
-      if (!reg.test(this.registerAccount) || this.registerAccount.length < 6 ||
-      this.registerAccount.length > 18) {
+      if (!reg.test(this.saveData.registerAccount) || this.saveData.registerAccount.length < 6 ||
+        this.saveData.registerAccount.length > 18) {
         this.accountWarnShow = true
         flag = true
       }
-      if (!reg.test(this.registerPassword) || this.registerPassword.length < 6 ||
-      this.registerPassword.length > 20) {
+      if (!reg.test(this.saveData.registerPassword) || this.saveData.registerPassword.length < 6 ||
+        this.saveData.registerPassword.length > 20) {
         this.passwordWarnShow = true
         flag = true
       }
-      if (this.registerPassword !== this.registerAduitPassword) {
+      if (this.saveData.registerPassword !== this.saveData.registerAduitPassword) {
         this.aduitPasswordWarnShow = true
         flag = true
       }
-      if (this.registerRealName.length === 0) {
+      if (this.saveData.registerRealName.length === 0) {
         this.realNameWarnShow = true
         flag = true
       }
-      if (this.registerIdCard.length === 0) {
+      if (this.saveData.registerIdCard.length === 0) {
         this.idCardWarnShow = true
         flag = true
       }
@@ -116,17 +120,25 @@ export default {
         return false
       }
       // 注册逻辑
-      var isregisterSuccess = true
-      if (isregisterSuccess) {
-        alert('注册成功（无操作）')
-        // 注册成功后，应当在session中存入用户信息
-
-        // 然后跳转到首页
-        this.$router.push({ path: '/' })
-      } else {
-        this.registerPassword = ''
-        alert('注册失败')
-      }
+      var _this = this
+      var params = new URLSearchParams()
+      params.append('account', this.saveData.registerAccount)
+      params.append('password', md5(this.saveData.registerPassword))
+      params.append('real_name', this.saveData.registerRealName)
+      params.append('id_card', this.saveData.registerIdCard)
+      axios.post(this.GLOBAL.apiPath + '/home/register', params, {
+        headers: { 'Authorization': sessionStorage.getItem('gmp-token') }
+      }).then(function (response) {
+        var res = response.data
+        if (res.success) {
+          alert('注册成功，请登录后再进入网站')
+          _this.$router.push({ path: '/login' })
+        } else {
+          alert(res.errors)
+        }
+      }).catch(function (err) {
+        alert(err.response.status + '：' + err.response.statusText)
+      })
     },
     handleInputChange (p) {
       switch (p) {
@@ -157,7 +169,7 @@ export default {
   margin-top: 100px;
   max-width: 500px;
   padding: 20px 30px 20px 30px;
-  font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 12px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-shadow: 1px 1px 1px #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -168,7 +180,7 @@ export default {
   display: block;
   padding: 0px 0px 10px 40px;
   margin: -10px -30px 30px -30px;
-  font: 25px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   border-bottom: 1px solid #dadada;
   color: #888;
   letter-spacing: 2px;
@@ -186,7 +198,7 @@ export default {
   width: 20%;
   padding-right: 10px;
   margin-top: 10px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: bold;
   text-align: right;
   color: #333;
@@ -229,8 +241,8 @@ export default {
   text-decoration: underline;
   color: red;
 }
-.page-register-form p{
-  color:red;
-  margin:5px 0 8px 110px;
+.page-register-form p {
+  color: red;
+  margin: 5px 0 8px 110px;
 }
 </style>

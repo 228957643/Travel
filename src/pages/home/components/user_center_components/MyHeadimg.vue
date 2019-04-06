@@ -23,9 +23,10 @@
 <script>
 export default {
   name: 'UserCenterMyHeadimg',
+  props: ['headImg'],
   data () {
     return {
-      avatar: 'static/images/user_center/default-head-img.png'
+      avatar: this.headImg === '' ? 'static/images/user_center/default-head-img.png' : this.headImg
     }
   },
   methods: {
