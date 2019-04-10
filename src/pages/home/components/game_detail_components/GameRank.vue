@@ -14,13 +14,13 @@
       <!-- 主要内容 -->
       <div class="game-ranking-hot-content">
         <ul>
-          <li v-for="item of 12" :key="item">
-            <router-link to>
+          <li v-for="item of hotGames" :key="item.id">
+            <a @click="handleGameClick(item.id)">
               <div>
-                <img src="http://imga4.5054399.com/upload_pic/2017/11/27/4399_15171490498.jpg" alt>
+                <img :src="item.icon" alt>
               </div>
-              <div>凹凸曼</div>
-            </router-link>
+              <div>{{item.name}}</div>
+            </a>
           </li>
         </ul>
       </div>
@@ -33,9 +33,9 @@
       </div>
       <div class="game-ranking-list-content">
         <ul>
-          <li v-for="rank of 10" :key="rank">
-            <span>{{rank}}</span>
-            <router-link to>造梦西游3-小游戏{{rank}}</router-link>
+          <li v-for="(rank,index) of ranking" :key="rank.id">
+            <span>{{index + 1}}</span>
+            <a @click="handleGameClick(rank.id)">{{rank.name}}</a>
           </li>
         </ul>
       </div>
@@ -45,13 +45,25 @@
 
 <script>
 export default {
-  name: 'GameRank'
+  name: 'GameRank',
+  props: ['ranking', 'hotGames'],
+  methods: {
+    // 游戏被点击，进入详情界面
+    handleGameClick (gameId) {
+      // 打开新的窗口展示游戏
+      var routeData = this.$router.resolve({ path: '/game_detail', query: { id: gameId } })
+      window.open(routeData.href, '_blank')
+    }
+  }
 }
 </script>
 
 <style>
 .game-ranking {
   width: 200px;
+}
+.game-ranking a{
+  cursor: pointer;
 }
 /* 开局一张图 */
 .game-ranking-top-img {
@@ -71,7 +83,7 @@ export default {
   display: inline-block;
   border-bottom: 2px solid #f29041;
 }
-.game-ranking-hot-content>ul{
+.game-ranking-hot-content > ul {
   display: flex;
   flex-flow: row wrap;
 }
@@ -90,43 +102,39 @@ export default {
 .game-ranking-hot-content a {
   text-align: center;
   color: #333;
-  font-size:12px;
+  font-size: 12px;
 }
 .game-ranking-hot-content a:hover {
   color: #ff6600;
   text-decoration: underline;
 }
 /* 排行榜 */
-.game-ranking-list-content{
-  width:100%;
-  height:42px;
-}
-.game-ranking-list-content>ul>li>span{
+.game-ranking-list-content > ul > li > span {
   display: inline-block;
-  width:20px;
+  width: 20px;
   height: 20px;
   background-color: #ccc;
-  color:#fff;
+  color: #fff;
   text-align: center;
   line-height: 20px;
   margin-top: 11px;
   margin-right: 10px;
 }
-.game-ranking-list-content>ul>li>a{
-  color:#333;
+.game-ranking-list-content > ul > li > a {
+  color: #333;
 }
-.game-ranking-list-content>ul>li>a:hover{
+.game-ranking-list-content > ul > li > a:hover {
   text-decoration: underline;
-  color:#ff8937;
+  color: #ff8937;
 }
 /* 第一、二、三名的背景样式 */
-.game-ranking-list-content>ul>li:nth-child(1)>span{
+.game-ranking-list-content > ul > li:nth-child(1) > span {
   background-color: #ff3d3d;
 }
-.game-ranking-list-content>ul>li:nth-child(2)>span{
+.game-ranking-list-content > ul > li:nth-child(2) > span {
   background-color: #ff774c;
 }
-.game-ranking-list-content>ul>li:nth-child(3)>span{
+.game-ranking-list-content > ul > li:nth-child(3) > span {
   background-color: #ff9c46;
 }
 </style>

@@ -1,27 +1,15 @@
 <template>
   <div class="game-detail-slider-component">
     <swiper :options="swiperOption">
-      <swiper-slide>
+      <swiper-slide v-for="(slider,index) of sliderGames" :key="index">
         <ul class="game-detail-slider-ul">
-          <li v-for="(item,index) of 9" :key="index">
-            <router-link to>
+          <li v-for="item of slider" :key="item.id">
+            <a style="cursor:pointer;" @click="handleGameClick(item.id)">
               <div>
-                <img src="http://imga3.5054399.com/upload_pic/2019/1/18/4399_17341338332.jpg" alt>
+                <img :src="item.icon" alt>
               </div>
-              <div>完美漂移</div>
-            </router-link>
-          </li>
-        </ul>
-      </swiper-slide>
-      <swiper-slide>
-        <ul class="game-detail-slider-ul">
-          <li v-for="(item,index) of 9" :key="index">
-            <router-link to>
-              <div>
-                <img src="http://imga1.5054399.com/upload_pic/2017/6/21/4399_15415471465.jpg" alt>
-              </div>
-              <div>楚乔传</div>
-            </router-link>
+              <div>{{item.name}}</div>
+            </a>
           </li>
         </ul>
       </swiper-slide>
@@ -34,6 +22,7 @@
 <script>
 export default {
   name: 'GameDetailSlider',
+  props: ['sliderGames'],
   data () {
     return {
       swiperOption: {
@@ -43,6 +32,14 @@ export default {
         },
         loop: true
       }
+    }
+  },
+  methods: {
+    // 游戏被点击，进入详情界面
+    handleGameClick (gameId) {
+      // 打开新的窗口展示游戏
+      var routeData = this.$router.resolve({ path: '/game_detail', query: { id: gameId } })
+      window.open(routeData.href, '_blank')
     }
   }
 }

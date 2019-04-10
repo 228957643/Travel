@@ -94,7 +94,7 @@
           <!-- 共享style结束 -->
           <div class="igl-best-game-list-content-right">
             <ul class="igl-best-game-list-content-ul-right">
-              <li v-for="(item,index) of 86" :key="index">
+              <li v-for="(item,index) of 26" :key="index">
                 <router-link to>
                   <div>
                     <img

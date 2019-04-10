@@ -1,17 +1,21 @@
 <template>
-<!-- 首页——主要内容部分：main -->
+  <!-- 首页——主要内容部分：main -->
   <div class="main-index">
     <!-- 头部导航栏 -->
     <home-index-header :headerListActive="0"></home-index-header>
     <!-- 导航栏下的小游戏列表 -->
-    <home-game-class></home-game-class>
+    <home-game-class :gameClassData="ajaxData.game_class"></home-game-class>
     <!-- 轮播图 -->
     <index-image-slider></index-image-slider>
     <div class="index-body">
       <!-- 游戏内容 -->
-      <index-game-list></index-game-list>
+      <div>
+        <index-game-list :newGames="ajaxData.new_game" :hotGames="ajaxData.hot_game"></index-game-list>
+      </div>
       <!-- 游戏内容右边的咨询 -->
-      <index-game-list-right></index-game-list-right>
+      <div>
+        <index-game-list-right></index-game-list-right>
+      </div>
     </div>
     <!-- 首页最右侧的导航栏 -->
     <div class="index-page-right-slider-btns" v-show="pageRightBtnsShow">
@@ -19,8 +23,9 @@
     </div>
     <!-- 首页 footer -->
     <div class="index-footer">
-      <img src="static/images/index/page-bottom_LI.jpg" alt="">
-      <span>备注：本网站作者模仿自：http://www.4399.com/，和http://www.7k7k.com，仅用于毕业设计，不传播贩卖，牟取利润。
+      <img src="static/images/index/page-bottom_LI.jpg" alt>
+      <span>
+        备注：本网站作者模仿自：http://www.4399.com/，和http://www.7k7k.com，仅用于毕业设计，不传播贩卖，牟取利润。
         如果侵犯了您的版权，请及时练习我们，本站将在1个工作日内删除，谢谢。联系方式：meien643@163.com
       </span>
     </div>
@@ -34,6 +39,7 @@ import IndexImageSlider from './index_components/ImageSlider'
 import IndexGameList from './index_components/GameList'
 import IndexGameListRight from './index_components/GameListRight'
 import IndexPageRightSliderBtns from './index_components/PageRightSliderBtns'
+import axios from 'axios'
 export default {
   name: 'HomeIndex',
   components: {
@@ -47,10 +53,16 @@ export default {
   data () {
     return {
       pageRightBtnsShow: false,
-      timer: null
+      timer: null,
+      ajaxData: {
+        'game_class': [], // 游戏列表
+        'hot_game': [], // 热门推荐
+        'new_game': [] // 最新小游戏
+      }
     }
   },
   methods: {
+    // 鼠标滚动事件，用于显示首页右侧的导航条
     handleScroll () {
       // 函数执行频率节流
       if (this.timer) {
@@ -64,6 +76,23 @@ export default {
           this.pageRightBtnsShow = false
         }
       }, 16)
+    },
+    // 通过ajax获取首页内容
+    ajaxGetData () {
+      var _this = this
+      axios.get(this.GLOBAL.apiPath + '/home/index')
+        .then(function (response) {
+          var res = response.data
+          if (res.success) {
+            _this.ajaxData.game_class = res.data.game_class
+            _this.ajaxData.hot_game = res.data.hot_game
+            _this.ajaxData.new_game = res.data.new_game
+          } else {
+            alert(res.errors)
+          }
+        }).catch(function (err) {
+          alert(err.response.status + '：' + err.response.statusText)
+        })
     }
   },
   created () {
@@ -71,6 +100,8 @@ export default {
     window.scrollTo(0, 0)
     this.pageRightBtnsShow = false
     window.addEventListener('scroll', this.handleScroll)
+    // 每次回到首页，都调用一次接口请求数据
+    this.ajaxGetData()
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll)
@@ -79,32 +110,32 @@ export default {
 </script>
 
 <style scoped>
-.main-index{
-  min-height:600px;
-  width:980px;
+.main-index {
+  min-height: 600px;
+  width: 980px;
   margin: 20px auto 0 auto;
 }
-.index-body{
-  display:flex;
+.index-body {
+  display: flex;
   justify-content: space-between;
 }
 /*  首页最右侧的导航栏 */
-.index-page-right-slider-btns{
+.index-page-right-slider-btns {
   position: fixed;
-  width:56px;
-  height:auto;
-  left:50%;
+  width: 56px;
+  height: auto;
+  left: 50%;
   z-index: 9999;
   bottom: 10%;
   margin-left: 540px;
 }
-.index-footer{
-  width:990px;
-  margin:10px auto 20px auto;
+.index-footer {
+  width: 990px;
+  margin: 10px auto 20px auto;
 }
-.index-footer span{
+.index-footer span {
   font-size: 12px;
-  color:#999;
+  color: #999;
   display: block;
   line-height: 20px;
   margin-top: 10px;

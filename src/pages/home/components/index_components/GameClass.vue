@@ -22,33 +22,9 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   name: 'HomeGameClass',
-  data () {
-    return {
-      apiPath: this.GLOBAL.apiPath, // 所有Api的域名前缀
-      header: { headers: { 'Authorization': sessionStorage.getItem('gmp-token') } }, //
-      gameClassData: []
-    }
-  },
-  methods: {
-    getClassData () {
-      // 绝对路径：http://localhost/graduation_server/public/index.php/admin/game_class
-      axios.get(this.apiPath + '/home/game_class', this.header).then(this.getClassDataSucc)
-    },
-    getClassDataSucc (res) {
-      res = res.data
-      if (res.success === true) {
-        this.gameClassData = res.data
-      } else {
-        alert('请求数据失败，请稍后重试')
-      }
-    }
-  },
-  mounted: function () {
-    this.getClassData()
-  }
+  props: ['gameClassData']
 }
 </script>
 

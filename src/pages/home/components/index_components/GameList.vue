@@ -11,7 +11,7 @@
                 <img src="static/images/index/more-game.png" alt>
               </li>
               <li class="igl-bglh-text">
-                <span>最好玩的小游戏</span>
+                <span>最新的小游戏</span>
               </li>
               <li class="igl-bglh-more">
                 <router-link to>更多</router-link>
@@ -21,30 +21,27 @@
           </div>
           <div class="igl-best-game-list-content">
             <ul class="igl-best-game-list-content-ul">
-              <li v-for="(item,index) of 147" :key="index">
-                <router-link to>
+              <li v-for="item of newGames" :key="item.id">
+                <a style="cursor:pointer;"  @click="handleGameClick(item.id)">
                   <div>
-                    <img
-                      src="http://imga5.5054399.com/upload_pic/2019/2/19/4399_09280951080.jpg"
-                      alt
-                    >
+                    <img :src="item.icon" alt>
                   </div>
-                  <div>泡泡星球</div>
-                </router-link>
+                  <div>{{item.name}}</div>
+                </a>
               </li>
             </ul>
           </div>
         </li>
         <li>
-          <!-- 女生游戏——锚点 -->
-          <a name="girl-game"></a>
+          <!-- 最热游戏——锚点 -->
+          <a name="hot-game"></a>
           <div class="igl-best-game-list-header">
             <ul>
               <li class="igl-bglh-img">
                 <img src="static/images/index/more-game.png" alt>
               </li>
               <li class="igl-bglh-text">
-                <span>女生游戏</span>
+                <span>最热门的小游戏</span>
               </li>
               <li class="igl-bglh-more">
                 <router-link to>更多</router-link>
@@ -54,16 +51,13 @@
           </div>
           <div class="igl-best-game-list-content">
             <ul class="igl-best-game-list-content-ul">
-              <li v-for="(item,index) of 147" :key="index">
-                <router-link to>
+              <li v-for="item of hotGames" :key="item.id">
+                <a style="cursor:pointer;" @click="handleGameClick(item.id)">
                   <div>
-                    <img
-                      src="http://i4.7k7kimg.cn/cms/cms10/20160401/154850_6912.jpg"
-                      alt
-                    >
+                    <img :src="item.icon" alt>
                   </div>
-                  <div>泡泡星球</div>
-                </router-link>
+                  <div>{{item.name}}</div>
+                </a>
               </li>
             </ul>
           </div>
@@ -74,7 +68,15 @@
 </template>
 <script>
 export default {
-  name: 'IndexGameList'
+  name: 'IndexGameList',
+  props: ['newGames', 'hotGames'],
+  methods: {
+    // 游戏被点击，进入详情界面
+    handleGameClick (gameId) {
+      var routeData = this.$router.resolve({ path: '/game_detail', query: { id: gameId } })
+      window.open(routeData.href, '_blank')
+    }
+  }
 }
 </script>
 

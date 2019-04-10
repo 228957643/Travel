@@ -5,30 +5,35 @@
     </div>
     <div class="game-comment-show-body">
       <ul>
-        <li v-for="i of 4" :key="i">
+        <li v-for="item of gameComment" :key="item.id">
           <div class="game-comment-show-body-headimg">
-            <img src="static/images/detail/default-head-img.png" alt>
+            <img
+              :src="item.user.head_img === ''?'static/images/detail/default-head-img.png':item.user.head_img"
+              alt
+            >
           </div>
           <div class="game-comment-show-body-div">
             <!-- 昵称，评论时间 -->
             <div class="gcsbd-nickname-time">
-              <span>旧颜丶消失殆尽</span>
+              <span>{{item.user.nickname}}</span>
               <span>1234玩家</span>
-              <span>2019/02/12 12:05</span>
+              <span>{{item.created_at}}</span>
             </div>
-            <!-- 评论内容 -->
-            <div class="gcsbd-comment-content">讨厌第11关，我都玩了50次还没过</div>
+            <!-- 评论内容 内容中包含html标签，因此用v-html代替{{}}-->
+            <div class="gcsbd-comment-content" v-html="item.content"></div>
             <!-- 其他 -->
           </div>
         </li>
       </ul>
+      <p class="game-comment-show-no-comment" v-if="gameComment.length === 0">暂无评论</p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'GameCommentShow'
+  name: 'GameCommentShow',
+  props: ['gameComment']
 }
 </script>
 
@@ -44,6 +49,7 @@ export default {
 }
 .game-comment-show-body {
   width: 100%;
+  min-height: 100px;
   margin-top: 10px;
   box-sizing: border-box;
   border: 1px solid #ccc;
@@ -86,5 +92,13 @@ export default {
   padding: 15px 10px 15px 0;
   font-family: '宋体', 'Times New Roman', Times, serif;
   line-height: 24px;
+}
+/* 没有评论时显示 */
+.game-comment-show-no-comment{
+  text-align: center;
+  font-size: 32px;
+  color:#ccc;
+  letter-spacing: 10px;
+  margin-top: 34px;
 }
 </style>

@@ -1,5 +1,7 @@
 <template>
   <div class="game-comment">
+    <!-- 锚点 -->
+    <a name="game-comment"></a>
     <div class="game-comment-func-btns">
       <ul>
         <!-- 常用表情 -->
@@ -70,8 +72,10 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'GameComment',
+  props: ['gameId'],
   data () {
     return {
       btnsO1DivShow: false, // 常用表情下的div是否显示
@@ -137,8 +141,38 @@ export default {
     },
     // 用户点击“发表评论”按钮
     handleUserSubmitComment () {
-      // TODO: 用户发表评论（这里需要请求后端接口，将数据存入数据库中）
-      alert('评论成功')
+      if (this.userCommentStarLevel === -1) {
+        this.$toast.top('请选择评论星级')
+        return false
+      }
+      if (this.userCommentContent.length === 0) {
+        this.$toast.top('评论内容不能为空')
+        return false
+      }
+      var _this = this
+      var params = new URLSearchParams()
+      params.append('game_id', _this.gameId)
+      params.append('level', _this.userCommentStarLevel)
+      params.append('content', _this.userCommentContent)
+      axios.post(_this.GLOBAL.apiPath + '/home/game_comment/insert', params, {
+        headers: { 'Authorization': sessionStorage.getItem('gmp-token') }
+      }).then(function (response) {
+        var res = response.data
+        if (res.success) {
+          alert('评论成功，感谢您的意见')
+          location.reload()
+        } else {
+          alert(res.errors)
+        }
+      }).catch(function (err) {
+        if (err.response.status === 401) {
+          alert('登录失效，请重新登录')
+          sessionStorage.clear()
+          _this.$router.push({ path: '/login' })
+        } else {
+          alert(err.response.status + '：' + err.response.statusText)
+        }
+      })
     },
     // 辅助函数——复用
     assistFunc (index) {

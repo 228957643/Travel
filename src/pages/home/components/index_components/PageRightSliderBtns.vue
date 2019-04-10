@@ -2,7 +2,7 @@
   <div class="page-right-slider-btns">
     <ul>
       <li><a href="#best-new-game">最新游戏</a></li>
-      <li><a href="#girl-game">女生游戏</a></li>
+      <li><a href="#hot-game">热门游戏</a></li>
       <li><router-link to="/feedback">意见反馈</router-link></li>
       <li><a href="javascript:alert('暂未开放')">H5在线玩</a></li>
       <li>
