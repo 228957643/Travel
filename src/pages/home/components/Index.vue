@@ -2,7 +2,7 @@
   <!-- 首页——主要内容部分：main -->
   <div class="main-index">
     <!-- 头部导航栏 -->
-    <home-index-header :headerListActive="0"></home-index-header>
+    <home-index-header :currentTypeId="0" :gameType="ajaxData.game_type"></home-index-header>
     <!-- 导航栏下的小游戏列表 -->
     <home-game-class :gameClassData="ajaxData.game_class"></home-game-class>
     <!-- 轮播图 -->
@@ -55,6 +55,7 @@ export default {
       pageRightBtnsShow: false,
       timer: null,
       ajaxData: {
+        'game_type': [], // 游戏类别
         'game_class': [], // 游戏列表
         'hot_game': [], // 热门推荐
         'new_game': [] // 最新小游戏
@@ -87,6 +88,9 @@ export default {
             _this.ajaxData.game_class = res.data.game_class
             _this.ajaxData.hot_game = res.data.hot_game
             _this.ajaxData.new_game = res.data.new_game
+            _this.ajaxData.game_type = res.data.game_type
+            // 将游戏类别放入session中
+            sessionStorage.setItem('gmp-gameType', JSON.stringify(res.data.game_type))
           } else {
             alert(res.errors)
           }
@@ -95,7 +99,7 @@ export default {
         })
     }
   },
-  created () {
+  mounted () {
     // 每次回到首页，都显示顶部，并且隐藏右侧的导航条
     window.scrollTo(0, 0)
     this.pageRightBtnsShow = false

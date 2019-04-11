@@ -5,11 +5,11 @@
     <div class="game-detail-body">
       <!-- second-header -->
       <div class="game-detail-second-header">
-        <home-index-header :headerListActive="4"></home-index-header>
+        <home-index-header :currentTypeId="ajaxData.gameDesc.type_id" :gameType="ajaxData.gameType"></home-index-header>
       </div>
       <!-- 路径跟踪 -->
       <div class="game-detail-path-tracking">
-        <path-tracking></path-tracking>
+        <path-tracking :pathList="ajaxData.pathList"></path-tracking>
       </div>
       <!-- 轮播图 -->
       <div class="game-detail-slider">
@@ -30,19 +30,19 @@
                 <div>
                   <img src="static/images/detail/right.png" alt>&nbsp;操作指南 (本游戏合适16岁以上用户)
                 </div>
-                <p>{{ajaxData.gameDesc.play.text1 === ''?'暂无操作指南，程序猿正火速赶往添加中……':ajaxData.gameDesc.play.text1}}</p>
+                <p>{{ajaxData.gameDesc.play.text1}}</p>
               </li>
               <li>
                 <div>
                   <img src="static/images/detail/right.png" alt>&nbsp;如何开始
                 </div>
-                <p>{{ajaxData.gameDesc.play.text2 === ''?'游戏加载完毕点击[开始]即可开始游戏':ajaxData.gameDesc.play.text2}}</p>
+                <p>{{ajaxData.gameDesc.play.text2}}</p>
               </li>
               <li>
                 <div>
                   <img src="static/images/detail/right.png" alt>&nbsp;游戏目标
                 </div>
-                <p>{{ajaxData.gameDesc.play.text3 === ''?'合理操作，获取游戏胜利':ajaxData.gameDesc.play.text3}}</p>
+                <p>{{ajaxData.gameDesc.play.text3}}</p>
               </li>
             </ul>
           </div>
@@ -99,11 +99,13 @@ export default {
         headers: { 'Authorization': sessionStorage.getItem('gmp-token') }
       },
       ajaxData: { // 请求后台接口返回的数据
-        gameDesc: { play: { test1: '', text2: '', text3: '' } }, // 游戏详情（初始化一下，免得console中报错
+        gameType: [], // 游戏类别
+        gameDesc: [], // 游戏详情
         gameComment: [], // 游戏评论
         sliderGames: [], // 轮播游戏列表
         hotGames: [], // 热门推荐
-        ranking: [] // 排行榜（总榜）
+        ranking: [], // 排行榜（总榜）
+        pathList: [{ name: '1234小游戏', pre: false }, { name: '小游戏', pre: true }] // 路径跟踪
       }
     }
   },
@@ -120,6 +122,10 @@ export default {
           _this.ajaxData.sliderGames = res.data.game_slider
           _this.ajaxData.hotGames = res.data.hot_game
           _this.ajaxData.ranking = res.data.ranking
+          _this.ajaxData.gameType = res.data.game_type
+          // 路径跟踪
+          _this.ajaxData.pathList.push({ name: res.data.game_desc.game_type, pre: true })
+          _this.ajaxData.pathList.push({ name: res.data.game_desc.name, pre: true })
         } else {
           alert(res.errors)
         }
@@ -143,9 +149,6 @@ export default {
 </script>
 
 <style>
-.clearBoth {
-  clear: both;
-}
 .game-detail-body {
   width: 980px;
   margin: 0 auto;

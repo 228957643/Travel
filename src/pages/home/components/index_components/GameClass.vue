@@ -3,17 +3,21 @@
   <div class="game-class">
     <ul>
       <li
-        v-for="gameClassLiData of gameClassData"
-        :key="gameClassLiData.id"
-        :class="gameClassLiData.is_half ? 'game-class-li-half' : 'game-class-li'"
+        v-for="(gameClassLiData,index) of gameClassData"
+        :key="index"
+        :class="index < 8 ? 'game-class-li-half' : 'game-class-li'"
       >
         <ul>
           <li
-            v-for="item of gameClassLiData.data"
-            :key="item.id"
-            :class="{'game-class-type':item.is_head}"
+            v-for="(item,index) of gameClassLiData"
+            :key="index"
+            :class="{'game-class-type':index === 0}"
+            @click="handleGameClassClick(item.id)"
           >
-            <router-link to>{{item.name}}</router-link>
+            <a
+              href="javascript:void(0)"
+              :style="{color:(item.type_id===2?'#fb6400':(item.type_id===6?'#389904':'#484848'))}"
+            >{{item.name}}</a>
           </li>
         </ul>
       </li>
@@ -24,7 +28,15 @@
 <script>
 export default {
   name: 'HomeGameClass',
-  props: ['gameClassData']
+  props: ['gameClassData'],
+  methods: {
+    // 游戏被点击，搜索
+    handleGameClassClick (gameId) {
+      // 游戏被点击，进入详情界面
+      var routeData = this.$router.resolve({ path: '/game_detail', query: { id: gameId } })
+      window.open(routeData.href, '_blank')
+    }
+  }
 }
 </script>
 
@@ -44,6 +56,9 @@ export default {
   line-height: 26px;
   margin-left: 7px;
   box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .game-class-li {
   width: 100%;
@@ -51,7 +66,11 @@ export default {
   line-height: 26px;
   margin-left: 7px;
   box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+/*  */
 .game-class > ul > li > ul {
   display: flex;
 }
@@ -60,7 +79,7 @@ export default {
 }
 .game-class > ul > li > ul > li a {
   font-size: 12px;
-  color: #000;
+  color: #484848;
 }
 .game-class > ul > li > ul > li a:hover {
   color: #ff8937;

@@ -80,9 +80,6 @@
           <div class="pull-down-list pdl" v-if="pullDownList.more">
             <ul>
               <li>
-                <router-link to="/game_detail">游戏详情界面</router-link>
-              </li>
-              <li>
                 <router-link to="/game_customization">定制化</router-link>
               </li>
             </ul>
@@ -131,9 +128,12 @@ export default {
       sessionStorage.clear()
       location.reload()
     },
+    // 按名称搜索游戏
     handleSearchBtnClick: function () {
-      alert(this.searchContent)
-      this.searchContent = ''
+      // 打开新的窗口展示游戏
+      // 需要传递两个参数，两个参数互斥，如果typeid存在就根据typeId获取数据，如果gameName存在，就根据游戏名模糊搜索
+      var routeData = this.$router.resolve({ path: '/search', query: { typeId: 0, gameName: this.searchContent } })
+      window.open(routeData.href, '_blank')
     },
     handleMouseChange: function (index) {
       switch (index) {

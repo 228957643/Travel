@@ -7,6 +7,7 @@ import Feedback from '@/pages/home/Feedback'
 import GameDetail from '@/pages/home/GameDetail'
 import UserCenter from '@/pages/home/UserCenter'
 import GameCustomization from '@/pages/home/GameCustomization'
+import Search from '@/pages/home/Search'
 
 Vue.use(Router)
 
@@ -52,6 +53,12 @@ export default new Router({
       path: '/game_customization',
       name: 'GameCustomization',
       component: GameCustomization,
+      meta: {keepAlive: false}
+    },
+    {
+      path: '/search',
+      name: 'Search',
+      component: Search,
       meta: {keepAlive: false}
     }
   ]
