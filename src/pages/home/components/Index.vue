@@ -6,7 +6,7 @@
     <!-- 导航栏下的小游戏列表 -->
     <home-game-class :gameClassData="ajaxData.game_class"></home-game-class>
     <!-- 轮播图 -->
-    <index-image-slider></index-image-slider>
+    <index-image-slider :sliderGame="ajaxData.slider_game"></index-image-slider>
     <div class="index-body">
       <!-- 游戏内容 -->
       <div>
@@ -14,7 +14,7 @@
       </div>
       <!-- 游戏内容右边的咨询 -->
       <div>
-        <index-game-list-right></index-game-list-right>
+        <index-game-list-right :rightGame="ajaxData.right_game"></index-game-list-right>
       </div>
     </div>
     <!-- 首页最右侧的导航栏 -->
@@ -57,8 +57,10 @@ export default {
       ajaxData: {
         'game_type': [], // 游戏类别
         'game_class': [], // 游戏列表
+        'slider_game': [], // 滚动栏游戏
         'hot_game': [], // 热门推荐
-        'new_game': [] // 最新小游戏
+        'new_game': [], // 最新小游戏
+        'right_game': [] // 右侧的游戏
       }
     }
   },
@@ -86,9 +88,11 @@ export default {
           var res = response.data
           if (res.success) {
             _this.ajaxData.game_class = res.data.game_class
+            _this.ajaxData.slider_game = res.data.slider_game
             _this.ajaxData.hot_game = res.data.hot_game
             _this.ajaxData.new_game = res.data.new_game
             _this.ajaxData.game_type = res.data.game_type
+            _this.ajaxData.right_game = res.data.right_game
             // 将游戏类别放入session中
             sessionStorage.setItem('gmp-gameType', JSON.stringify(res.data.game_type))
           } else {

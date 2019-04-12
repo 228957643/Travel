@@ -5,6 +5,21 @@
     <div class="game-ranking-top-img">
       <img src="http://imga.5054399.com/upload_pic/2019/2/28/4399_08534894713.jpg" alt>
     </div>
+    <!-- 排行榜 -->
+    <div class="game-ranking-list">
+      <!-- 头部样式 -->
+      <div class="game-ranking-header">
+        <span>排行榜（总榜）</span>
+      </div>
+      <div class="game-ranking-list-content">
+        <ul>
+          <li v-for="(rank,index) of ranking" :key="rank.id">
+            <span>{{index + 1}}</span>
+            <a @click="handleGameClick(rank.id)">{{rank.name}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
     <!-- 热门推荐 -->
     <div class="game-ranking-hot">
       <!-- 头部样式 -->
@@ -21,21 +36,6 @@
               </div>
               <div>{{item.name}}</div>
             </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <!-- 排行榜 -->
-    <div class="game-ranking-list">
-      <!-- 头部样式 -->
-      <div class="game-ranking-header">
-        <span>排行榜（总榜）</span>
-      </div>
-      <div class="game-ranking-list-content">
-        <ul>
-          <li v-for="(rank,index) of ranking" :key="rank.id">
-            <span>{{index + 1}}</span>
-            <a @click="handleGameClick(rank.id)">{{rank.name}}</a>
           </li>
         </ul>
       </div>

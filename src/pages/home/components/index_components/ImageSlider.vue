@@ -1,51 +1,11 @@
 <template>
   <div class="index-image-swiper">
     <swiper :options="swiperOption">
-      <swiper-slide>
-        <ul>
-          <li v-for="(item,index) of 11" :key="index" class="index-image-swiper-item">
-            <router-link to>
-              <div>
-                <img src="http://i3.7k7kimg.cn/cms/cms10/20180810/143007_9202.jpg" alt>
-              </div>
-              <div>暴力摩托</div>
-            </router-link>
-            <router-link to>
-              <div>
-                <img src="http://i3.7k7kimg.cn/cms/cms10/20180810/143007_9202.jpg" alt>
-              </div>
-              <div>暴力摩托</div>
-            </router-link>
-            <router-link to>
-              <div>
-                <img src="http://i3.7k7kimg.cn/cms/cms10/20180810/143007_9202.jpg" alt>
-              </div>
-              <div>暴力摩托</div>
-            </router-link>
-          </li>
-        </ul>
-      </swiper-slide>
-      <swiper-slide>
-        <ul>
-          <li v-for="(item,index) of 11" :key="index" class="index-image-swiper-item">
-            <router-link to>
-              <div>
-                <img src="http://i3.7k7kimg.cn/cms/cms10/20180810/143007_9202.jpg" alt>
-              </div>
-              <div>暴力摩托</div>
-            </router-link>
-            <router-link to>
-              <div>
-                <img src="http://i3.7k7kimg.cn/cms/cms10/20180810/143007_9202.jpg" alt>
-              </div>
-              <div>暴力摩托</div>
-            </router-link>
-            <router-link to>
-              <div>
-                <img src="http://i3.7k7kimg.cn/cms/cms10/20180810/143007_9202.jpg" alt>
-              </div>
-              <div>暴力摩托</div>
-            </router-link>
+      <swiper-slide v-for="(games,index) of sliderGame" :key="index">
+        <ul class="index-image-swiper-box">
+          <li v-for="it of games" :key="it.id" @click="handleSwiperGameClick(it.id)">
+            <img :src="it.icon" alt>
+            <p>{{it.name}}</p>
           </li>
         </ul>
       </swiper-slide>
@@ -58,6 +18,7 @@
 <script>
 export default {
   name: 'IndexImageSlider',
+  props: ['sliderGame'],
   data () {
     return {
       swiperOption: {
@@ -68,6 +29,14 @@ export default {
         loop: true
       }
     }
+  },
+  methods: {
+    // 游戏被点击，进入详情界面
+    handleSwiperGameClick (gameId) {
+      // 打开新的窗口展示游戏
+      var routeData = this.$router.resolve({ path: '/game_detail', query: { id: gameId } })
+      window.open(routeData.href, '_blank')
+    }
   }
 }
 </script>
@@ -77,6 +46,7 @@ export default {
   height: 252px;
   border: 1px solid #ffdead;
   box-sizing: border-box;
+  padding-top: 9px;
 }
 /* 左右翻页的箭头 */
 #index-image-swiper-btn-prev {
@@ -88,34 +58,38 @@ export default {
   height: 20px;
 }
 /* 每个a标签（包含图片和名称） */
-.index-image-swiper ul {
+.index-image-swiper-box {
+  width: 904px;
+  max-height: 234px;
+  margin: 0 auto;
   display: flex;
-  margin-top: 14px;
-  margin-left: 30px;
+  flex-flow: row wrap;
+}
+.index-image-swiper-box li {
+  margin-top: 2px;
+  margin-left: 4px;
+  width: 78px;
+  height: 76px;
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+.index-image-swiper-box li p {
+  width: 78px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.index-image-swiper-box li:hover {
+  color: orange;
+  text-decoration: underline;
+}
+.index-image-swiper-box li img {
+  width: 66px;
+  height: 50px;
+  margin-bottom: 7px;
 }
 .swiper-slide-active {
   overflow: hidden;
-}
-.index-image-swiper-item {
-  margin-left: 5px;
-}
-.index-image-swiper-item > a {
-  display: block;
-  width: 78px;
-  height: 69px;
-  text-align: center;
-  margin-bottom: 8px;
-}
-.index-image-swiper-item > a:hover {
-  text-decoration: underline;
-  color: orange;
-}
-.index-image-swiper-item > a img {
-  width: 66px;
-  height: 50px;
-}
-.index-image-swiper-item > a > div:nth-child(2) {
-  font-size: 12px;
-  margin-top: 4px;
 }
 </style>

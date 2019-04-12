@@ -32,6 +32,9 @@ export default {
   methods: {
     // 游戏被点击，搜索
     handleGameClassClick (gameId) {
+      if (gameId < 1) { // 第一个点击无效（如：热门，女生等）
+        return false
+      }
       // 游戏被点击，进入详情界面
       var routeData = this.$router.resolve({ path: '/game_detail', query: { id: gameId } })
       window.open(routeData.href, '_blank')

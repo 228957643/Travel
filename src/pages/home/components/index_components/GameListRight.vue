@@ -13,25 +13,22 @@
               <li class="igl-bglh-text">
                 <span>今日推荐</span>
               </li>
-              <li class="igl-bglh-more">
+              <!-- <li class="igl-bglh-more">
                 <router-link to>更多</router-link>
                 <img src="static/images/index/more-red.png" alt>
-              </li>
+              </li> -->
             </ul>
           </div>
           <!-- 共享style结束 -->
           <div class="igl-best-game-list-content-right">
             <ul class="igl-best-game-list-content-ul-right">
-              <li v-for="(item,index) of 27" :key="index">
-                <router-link to>
+              <li v-for="item of rightGame.right_today_game" :key="item.id">
+                <a style="cursor:pointer;" @click="handleRightGameClick(item.id)">
                   <div>
-                    <img
-                      src="http://imga2.5054399.com/upload_pic/2018/5/16/4399_14130126032.jpg"
-                      alt
-                    >
+                    <img :src="item.icon" alt>
                   </div>
-                  <div>泡泡星球</div>
-                </router-link>
+                  <div>{{item.name}}</div>
+                </a>
               </li>
             </ul>
           </div>
@@ -47,27 +44,24 @@
                 <img src="static/images/index/more-game.png" alt>
               </li>
               <li class="igl-bglh-text">
-                <span>今日推荐</span>
+                <span>热门推荐</span>
               </li>
-              <li class="igl-bglh-more">
+              <!-- <li class="igl-bglh-more">
                 <router-link to>更多</router-link>
                 <img src="static/images/index/more-red.png" alt>
-              </li>
+              </li> -->
             </ul>
           </div>
           <!-- 共享style结束 -->
           <div class="igl-best-game-list-content-right">
             <ul class="igl-best-game-list-content-ul-right">
-              <li v-for="(item,index) of 27" :key="index">
-                <router-link to>
+              <li v-for="item of rightGame.right_hot_game" :key="item.id">
+                <a style="cursor:pointer;" @click="handleRightGameClick(item.id)">
                   <div>
-                    <img
-                      src="http://imga2.5054399.com/upload_pic/2019/1/10/4399_16302459871.jpg"
-                      alt
-                    >
+                    <img :src="item.icon" alt>
                   </div>
-                  <div>泡泡星球</div>
-                </router-link>
+                  <div>{{item.name}}</div>
+                </a>
               </li>
             </ul>
           </div>
@@ -83,27 +77,24 @@
                 <img src="static/images/index/more-game.png" alt>
               </li>
               <li class="igl-bglh-text">
-                <span>今日推荐</span>
+                <span>好玩推荐</span>
               </li>
-              <li class="igl-bglh-more">
+              <!-- <li class="igl-bglh-more">
                 <router-link to>更多</router-link>
                 <img src="static/images/index/more-red.png" alt>
-              </li>
+              </li> -->
             </ul>
           </div>
           <!-- 共享style结束 -->
           <div class="igl-best-game-list-content-right">
             <ul class="igl-best-game-list-content-ul-right">
-              <li v-for="(item,index) of 26" :key="index">
-                <router-link to>
+              <li v-for="item of rightGame.right_good_game" :key="item.id">
+                <a style="cursor:pointer;" @click="handleRightGameClick(item.id)">
                   <div>
-                    <img
-                      src="http://imga4.5054399.com/upload_pic/2019/2/26/4399_15163913359.jpg"
-                      alt
-                    >
+                    <img :src="item.icon" alt>
                   </div>
-                  <div>泡泡星球</div>
-                </router-link>
+                  <div>{{item.name}}</div>
+                </a>
               </li>
             </ul>
           </div>
@@ -115,7 +106,15 @@
 
 <script>
 export default {
-  name: 'IndexGameListRight'
+  name: 'IndexGameListRight',
+  props: ['rightGame'],
+  methods: {
+    handleRightGameClick (gameId) {
+      // 打开新的窗口展示游戏
+      var routeData = this.$router.resolve({ path: '/game_detail', query: { id: gameId } })
+      window.open(routeData.href, '_blank')
+    }
+  }
 }
 </script>
 
@@ -127,6 +126,10 @@ export default {
   border: 1px solid #ffdead;
   margin-top: 10px;
 }
+.index-game-list-right>ul>li:nth-child(2), /* 热门推荐 */
+.index-game-list-right>ul>li:nth-child(3) /* 好玩推荐 */{
+  margin-top: 30px;
+}
 /*  */
 /*  */
 .igl-best-game-list-content-ul-right {
@@ -135,7 +138,7 @@ export default {
 }
 .igl-best-game-list-content-ul-right > li {
   width: 81px;
-  height: 86px;
+  min-height: 86px;
   text-align: center;
   margin-top: 10px;
 }
