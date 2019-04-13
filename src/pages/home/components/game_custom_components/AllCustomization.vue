@@ -16,9 +16,7 @@
           <td>
             <select name="game_type" id="game_type" v-model="formValue.game_type">
               <option value="0">请选择游戏类别</option>
-              <option value="1">女生游戏</option>
-              <option value="2">动作</option>
-              <option value="3">射击</option>
+              <option v-for="type of gameTypes" :key="type.id" :value="type.id">{{type.type_name}}</option>
             </select>
           </td>
         </tr>
@@ -88,16 +86,18 @@
       </table>
     </form>
     <div class="game-customization-all-message">
-        <p>1、信息一旦提交，则消耗一次申请资格，修改和补充信息只能重新申请（不返还申请资格）。</p>
-        <p>2、请认真填写材料，保证材料的条理性和完整性，同时保持电话畅通，工作人员可能随时找你沟通游戏设计的具体事宜。</p>
-        <p>3、承诺：该游戏百分之百属于创新项目，导致的任何产权纠纷，均由申请者承担全部责任。</p>
-      </div>
+      <p>1、信息一旦提交，则消耗一次申请资格，修改和补充信息只能重新申请（不返还申请资格）。</p>
+      <p>2、请认真填写材料，保证材料的条理性和完整性，同时保持电话畅通，工作人员可能随时找你沟通游戏设计的具体事宜。</p>
+      <p>3、承诺：该游戏百分之百属于创新项目，导致的任何产权纠纷，均由申请者承担全部责任。</p>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'AllCustomization',
+  props: ['gameTypes'],
   data () {
     return {
       formValue: {
@@ -105,7 +105,8 @@ export default {
         game_type: '0', // 游戏类别
         game_desc: '', // 游戏简介
         game_play: '', // 游戏玩法
-        why_good: '' // 闪光点
+        why_good: '', // 闪光点
+        phone: '' // 手机号码
       }
     }
   },
@@ -121,16 +122,34 @@ export default {
         this.$toast.top('请输入正确的手机号')
         return false
       }
-      // TODO:跟后台交互
-      alert('程序员正在加班开发中...')
-      // 重置表单
-      this.formValue = {
-        game_name: '',
-        game_type: '0',
-        game_desc: '',
-        game_play: '',
-        why_good: ''
-      }
+      // 跟后台交互
+      var _this = this
+      var params = new URLSearchParams()
+      params.append('game_name', this.formValue.game_name)
+      params.append('game_type', this.formValue.game_type)
+      params.append('game_desc', this.formValue.game_desc)
+      params.append('play_way', this.formValue.game_play)
+      params.append('flash_point', this.formValue.why_good)
+      params.append('phone', this.formValue.phone)
+      axios.post(_this.GLOBAL.apiPath + '/home/customize/all_insert', params, {
+        headers: { 'Authorization': sessionStorage.getItem('gmp-token') }
+      }).then(function (response) {
+        var res = response.data
+        if (res.success) {
+          alert('定制化成功，请保持电话畅通')
+          location.reload()
+        } else {
+          alert(res.errors)
+        }
+      }).catch(function (err) {
+        if (err.response.status === 401) {
+          alert('登录失效，请重新登录')
+          sessionStorage.clear()
+          _this.$router.push({ path: '/login' })
+        } else {
+          alert(err.response.status + '：' + err.response.statusText)
+        }
+      })
     }
   }
 }

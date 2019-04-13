@@ -1,5 +1,5 @@
 <template>
-  <div class="game-customization">
+  <div class="game-customization" v-if="isShowPage">
     <!-- 顶部的导航栏 -->
     <div class="game-customization-header">
       <home-header></home-header>
@@ -32,10 +32,10 @@
         </ul>
       </div>
       <div class="game-customization-body-right">
-        <game-customization-history v-if="showPage.page4"></game-customization-history>
+        <game-local-customization v-if="showPage.page1" :gameList="ajaxData.game_list"></game-local-customization>
+        <game-all-customization v-if="showPage.page2" :gameTypes="ajaxData.game_types"></game-all-customization>
         <game-customization-list v-if="showPage.page3"></game-customization-list>
-        <game-local-customization v-if="showPage.page1"></game-local-customization>
-        <game-all-customization v-if="showPage.page2"></game-all-customization>
+        <game-customization-history v-if="showPage.page4"></game-customization-history>
       </div>
     </div>
   </div>
@@ -47,6 +47,7 @@ import GameCustomizationHistory from './components/game_custom_components/Custom
 import GameCustomizationList from './components/game_custom_components/CustomizationList'
 import GameLocalCustomization from './components/game_custom_components/LocalCustomization'
 import GameAllCustomization from './components/game_custom_components/AllCustomization'
+import axios from 'axios'
 export default {
   name: 'GameCustomization',
   components: {
@@ -59,10 +60,16 @@ export default {
   data () {
     return {
       // 决定显示哪个界面
-      showPage: { page1: true, page3: false, page2: false, page4: false }
+      showPage: { page1: true, page3: false, page2: false, page4: false },
+      isShowPage: false, // 当后端返回数据之后，再一起显示界面
+      ajaxData: { // 请求后端接口返回的数据
+        'game_list': [], // 允许定制化的游戏列表
+        'game_types': [] // 所有的游戏类型
+      }
     }
   },
   methods: {
+    // 变更界面
     handlePageChange (val) {
       switch (val) {
         case 'page1':
@@ -78,7 +85,33 @@ export default {
           this.showPage = { page1: false, page3: false, page2: false, page4: true }
           break
       }
+    },
+    // 请求后端，获取数据
+    ajaxGetData () {
+      var _this = this
+      axios.get(_this.GLOBAL.apiPath + '/home/customize/get_all', {
+        headers: { 'Authorization': sessionStorage.getItem('gmp-token') }
+      }).then(function (response) {
+        var res = response.data
+        if (res.success) {
+          _this.ajaxData = res.data
+          _this.isShowPage = true // 当成功获取数据后，显示界面
+        } else {
+          alert(res.errors)
+        }
+      }).catch(function (err) {
+        if (err.response.status === 401) {
+          alert('登录失效，请重新登录')
+          sessionStorage.clear()
+          _this.$router.push({ path: '/login' })
+        } else {
+          alert(err.response.status + '：' + err.response.statusText)
+        }
+      })
     }
+  },
+  mounted () {
+    this.ajaxGetData() // 调用请求数据的方法
   }
 }
 </script>
@@ -123,7 +156,7 @@ export default {
   border-bottom: 1px solid #b5e0ea;
 }
 /* 子组件 */
-.game-customization-body-right{
+.game-customization-body-right {
   width: 700px;
 }
 /* 当前页面，左侧导航栏的样式 */

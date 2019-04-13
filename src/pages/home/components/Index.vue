@@ -1,6 +1,6 @@
 <template>
   <!-- 首页——主要内容部分：main -->
-  <div class="main-index">
+  <div class="main-index" v-if="pageIsShow">
     <!-- 头部导航栏 -->
     <home-index-header :currentTypeId="0" :gameType="ajaxData.game_type"></home-index-header>
     <!-- 导航栏下的小游戏列表 -->
@@ -54,6 +54,7 @@ export default {
     return {
       pageRightBtnsShow: false,
       timer: null,
+      pageIsShow: false, // 页面是否显示（数据为加载完成之前不显示）
       ajaxData: {
         'game_type': [], // 游戏类别
         'game_class': [], // 游戏列表
@@ -87,12 +88,8 @@ export default {
         .then(function (response) {
           var res = response.data
           if (res.success) {
-            _this.ajaxData.game_class = res.data.game_class
-            _this.ajaxData.slider_game = res.data.slider_game
-            _this.ajaxData.hot_game = res.data.hot_game
-            _this.ajaxData.new_game = res.data.new_game
-            _this.ajaxData.game_type = res.data.game_type
-            _this.ajaxData.right_game = res.data.right_game
+            _this.ajaxData = res.data
+            _this.pageIsShow = true // 显示界面
             // 将游戏类别放入session中
             sessionStorage.setItem('gmp-gameType', JSON.stringify(res.data.game_type))
           } else {

@@ -56,7 +56,7 @@
           </span>&nbsp;
           <span>我玩过的</span>
           <div class="pull-down-list" v-if="pullDownList.played">
-            <header-played-game-slider></header-played-game-slider>
+            <header-played-game-slider :footPrint="ajaxData.foot_print"></header-played-game-slider>
           </div>
         </li>
         <li
@@ -69,7 +69,7 @@
           </span>&nbsp;
           <span>猜你喜欢</span>
           <div class="pull-down-list" v-if="pullDownList.love">
-            <header-guess-love-slider></header-guess-love-slider>
+            <header-guess-love-slider :guessLike="ajaxData.guess_like"></header-guess-love-slider>
           </div>
         </li>
         <li @mouseenter="handleMouseChange('more')" @mouseleave="handleMouseChange('more')">
@@ -80,7 +80,7 @@
           <div class="pull-down-list pdl" v-if="pullDownList.more">
             <ul>
               <li>
-                <router-link to="/game_customization">定制化</router-link>
+                <router-link to="/game_customization">游戏定制化</router-link>
               </li>
             </ul>
           </div>
@@ -93,6 +93,7 @@
 <script>
 import HeaderGuessLoveSlider from './header_components/GuessLoveSlider'
 import HeaderPlayedGameSlider from './header_components/PlayedGameSlider'
+import axios from 'axios'
 export default {
   name: 'HomeHeader',
   components: {
@@ -104,6 +105,10 @@ export default {
       isLogin: false, // 用户是否登录
       nickName: '', // 用户昵称
       searchContent: '',
+      ajaxData: {
+        'guess_like': [], // 猜你喜欢
+        'foot_print': [] // 我的足迹
+      },
       pullDownList: {
         played: false,
         love: false,
@@ -116,6 +121,9 @@ export default {
     }
   },
   mounted () {
+    // 获取数据
+    this.ajaxGetHeaderData()
+    // 判断用户是否登录
     var nickName = sessionStorage.getItem('gmp-nickname')
     if (nickName !== null) {
       this.nickName = nickName
@@ -126,7 +134,7 @@ export default {
     // 退出登录
     handleUserUnLogin () {
       sessionStorage.clear()
-      location.reload()
+      this.$router.push({ path: '/' })
     },
     // 按名称搜索游戏
     handleSearchBtnClick: function () {
@@ -134,6 +142,30 @@ export default {
       // 需要传递两个参数，两个参数互斥，如果typeid存在就根据typeId获取数据，如果gameName存在，就根据游戏名模糊搜索
       var routeData = this.$router.resolve({ path: '/search', query: { typeId: 0, gameName: this.searchContent } })
       window.open(routeData.href, '_blank')
+    },
+    // 获取猜你喜欢 和 我的足迹
+    ajaxGetHeaderData () {
+      var _this = this
+      var userId = 0
+      var token = sessionStorage.getItem('gmp-token')
+      if (token != null) {
+        userId = token.split('@')[0]
+      }
+      axios.get(this.GLOBAL.apiPath + '/home/index_header', {
+        params: {
+          'id': userId
+        }
+      })
+        .then(function (response) {
+          var res = response.data
+          if (res.success) {
+            _this.ajaxData = res.data
+          } else {
+            alert(res.errors)
+          }
+        }).catch(function (err) {
+          alert(err.response.status + '：' + err.response.statusText)
+        })
     },
     handleMouseChange: function (index) {
       switch (index) {

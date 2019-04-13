@@ -9,8 +9,7 @@
         <td>
           <select name="game_id" id="game_id" v-model="formValue.game_id">
             <option value="0" selected>请选择游戏</option>
-            <option value="1">造梦西游3</option>
-            <option value="2">武动乾坤</option>
+            <option v-for="game of gameList" :key="game.id" :value="game.id">{{game.name}}</option>
           </select>
         </td>
       </tr>
@@ -48,12 +47,12 @@
             value="4"
             v-model="formValue.customization_needs"
           >
-          <label for="customization_need4">任务皮肤</label>
+          <label for="customization_need4">皮肤</label>
           <!-- 自定义 -->
           <input
             type="checkbox"
             id="customization_need5"
-            value="-1"
+            value="5"
             v-model="formValue.customization_needs"
           >
           <label for="customization_need5">自定义</label>
@@ -80,12 +79,12 @@
             rows="4"
             v-model="formValue.remark"
             placeholder="如果您想自定义“需求”，请在这里告诉我们"
-            maxlength="300"
+            maxlength="1000"
           ></textarea>
         </td>
       </tr>
       <tr class="game-customization-local-phone">
-        <td>联系方式：</td>
+        <td>手机号码：</td>
         <td>
           <input type="text" maxlength="11" v-model="formValue.phone">
         </td>
@@ -106,8 +105,10 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'LocalCustomization',
+  props: ['gameList'],
   data () {
     return {
       formValue: {
@@ -121,11 +122,13 @@ export default {
     }
   },
   methods: {
+    // 用户定制化
     handleLocalCustomizationClick () {
       if (this.formValue.game_id === 0) {
         this.$toast.top('请选择游戏')
         return false
       }
+      console.log(this.formValue.customization_needs)
       if (this.formValue.customization_needs.length === 0) {
         this.$toast.top('请选择定制化需求')
         return false
@@ -139,19 +142,39 @@ export default {
         this.$toast.top('请输入正确的手机号')
         return false
       }
-      // TODO:向后台提交订单（提交订单时，记得加上payMoney计算属性）
-      alert('订单已提交，谢谢你的光临')
-      // 清空数据
-      this.formValue = {
-        game_id: 0,
-        customization_needs: [],
-        time_limit: 0,
-        phone: '',
-        remark: ''
-      }
+      // 向后台提交订单
+      var params = new URLSearchParams()
+      params.append('game_id', this.formValue.game_id)
+      params.append('customize_need', this.formValue.customization_needs.join(','))
+      params.append('time_limit', this.formValue.time_limit)
+      params.append('remark', this.formValue.remark)
+      params.append('phone', this.formValue.phone)
+      params.append('money', this.payMoney)
+      // 在这里验证支付
+      var _this = this
+      axios.post(_this.GLOBAL.apiPath + '/home/customize/local_insert', params, {
+        headers: { 'Authorization': sessionStorage.getItem('gmp-token') }
+      }).then(function (response) {
+        var res = response.data
+        if (res.success) {
+          alert('定制化成功，请保持电话畅通')
+          location.reload()
+        } else {
+          alert(res.errors)
+        }
+      }).catch(function (err) {
+        if (err.response.status === 401) {
+          alert('登录失效，请重新登录')
+          sessionStorage.clear()
+          _this.$router.push({ path: '/login' })
+        } else {
+          alert(err.response.status + '：' + err.response.statusText)
+        }
+      })
     }
   },
   computed: {
+    // 计算应该支付的金额
     payMoney: function () {
       var price = 0
       switch (this.formValue.time_limit) {
@@ -229,7 +252,7 @@ export default {
   color: #666;
   border: 1px solid #ccc;
 }
-.game-customization-table input[type='submit']{
+.game-customization-table input[type='submit'] {
   border: 1px solid #ccc;
   padding: 4px 20px 4px 20px;
   background-color: #f5f5f5;
