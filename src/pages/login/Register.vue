@@ -123,7 +123,7 @@ export default {
       var _this = this
       var params = new URLSearchParams()
       params.append('account', this.saveData.registerAccount)
-      params.append('password', md5(this.saveData.registerPassword))
+      params.append('password', md5(this.saveData.registerPassword)) // 此处先对用户密码进行一次加密
       params.append('real_name', this.saveData.registerRealName)
       params.append('id_card', this.saveData.registerIdCard)
       axios.post(this.GLOBAL.apiPath + '/home/register', params, {
