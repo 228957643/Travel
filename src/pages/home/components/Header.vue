@@ -149,7 +149,7 @@ export default {
       var userId = 0
       var token = sessionStorage.getItem('gmp-token')
       if (token != null) {
-        userId = token.split('@')[0]
+        userId = token.split('@')[1]
       }
       axios.get(this.GLOBAL.apiPath + '/home/index_header', {
         params: {
