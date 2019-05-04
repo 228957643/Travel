@@ -45,7 +45,7 @@
             <!-- 审核状态——进行中、已通过、已过期  -->
             <div style="font-size:18px;font-weight:600;margin-top:10px;">
               审核状态：
-              <span class="game-customization-status-faild">{{i.status === 1?'进行中':(i.status === 2?'已通过':'未通过')}}</span>
+              <span class="game-customization-status-faild">{{i.status === 0?'审核中':(i.status === 1?'进行中':(i.status === 2?'已通过':'未通过'))}}</span>
             </div>
           </div>
         </li>
