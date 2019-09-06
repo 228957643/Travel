@@ -1,4 +1,4 @@
-# travel
+# 毕业设计前端（travel）
 
 > A Vue.js project
 
